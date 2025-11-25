@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Poovitha’s Task Manager</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 40px;
+      background: #f4f4f4;
+    }
+    h1 { color: #333; }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+    .task {
+      background: white;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Poovitha’s Task Manager 📝</h1>
+
+  <input id="taskInput" placeholder="Enter task name">
+  <button onclick="addTask()">Add Task</button>
+
+  <h2>Tasks</h2>
+  <div id="taskList"></div>
+
+  <script>
+    async function loadTasks() {
+      const res = await fetch("/api/tasks");
+      const tasks = await res.json();
+
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+
+      tasks.forEach(t => {
+        const div = document.createElement("div");
+        div.className = "task";
+        div.innerHTML = `
+          <span>${t.title} - ${t.completed ? "✔️" : "❌"}</span>
+          <button onclick="deleteTask(${t.id})">Delete</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    async function addTask() {
+      const title = document.getElementById("taskInput").value;
+
+      await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title })
+      });
+
+      document.getElementById("taskInput").value = "";
+      loadTasks();
+    }
+
+    async function deleteTask(id) {
+      await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+      loadTasks();
+    }
+
+    loadTasks();
+  </script>
+
+</body>
+</html>
