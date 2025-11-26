@@ -29,7 +29,7 @@ let tasks = [
 
 // Home route
 app.get("/", (req, res) => {
-  res.send("Welcome to Poovitha's Task Manager API, are you ready to explore? 🚀");
+  res.send("Welcome to Poovitha's Task Manager API, Happy starting 🚀");
 });
 
 // Get all tasks
